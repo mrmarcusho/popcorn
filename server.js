@@ -561,3 +561,12 @@ if (require.main === module) {
     process.exit(1);
   });
 }
+
+//exported handler so vercel (or any serverless host) can invoke us per-request
+//locally we use start() above which calls .listen
+module.exports = function (req, res) {
+  router(req, res).catch(function (err) {
+    console.log("router error", err);
+    if (!res.headersSent) sendJson(res, 500, { ok: false, error: "server error" });
+  });
+};
