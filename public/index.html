@@ -1,50 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
   <title>Popcorn</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="top">
+  <div class="top">
     <div class="brand">
       <h1>🍿 Popcorn</h1>
     </div>
     <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="search movies..." />
+      <input type="text" id="searchInput" placeholder="search movies...">
       <button type="button" id="btnSearch">search</button>
     </div>
     <div id="authArea" class="auth-area"></div>
-  </header>
+  </div>
 
-  <main>
-    <section id="loginSection" class="card auth-card">
-      <h2>log in</h2>
-      <p class="hint">so your stuff saves</p>
-      <label>username <input type="text" id="loginUser" /></label>
-      <label>password <input type="password" id="loginPass" /></label>
-      <button type="button" id="btnLogin">log in</button>
-      <p class="switch">new? <a href="#" id="linkShowRegister">register</a></p>
+  <div id="mainWrap">
+    <div id="loginSection" class="card auth-card">
+      <h2>Log In</h2>
+      <p class="hint">Sign in to save your watchlist and reviews.</p>
+      <label>Username <input type="text" id="loginUser"></label>
+      <label>Password <input type="password" id="loginPass"></label>
+      <button type="button" id="btnLogin">Log In</button>
+      <p class="switch">Need an account? <a href="#" id="linkShowRegister">Register</a></p>
       <p id="loginMsg" class="msg"></p>
-    </section>
+    </div>
 
-    <section id="registerSection" class="card auth-card hidden">
-      <h2>register</h2>
-      <label>username <input type="text" id="regUser" /></label>
-      <label>password <input type="password" id="regPass" /></label>
-      <button type="button" id="btnRegister">make account</button>
-      <p class="switch">have account? <a href="#" id="linkShowLogin">log in</a></p>
+    <div id="registerSection" class="card auth-card hidden">
+      <h2>Register</h2>
+      <label>Username <input type="text" id="regUser"></label>
+      <label>Password <input type="password" id="regPass"></label>
+      <button type="button" id="btnRegister">Create Account</button>
+      <p class="switch">Already have an account? <a href="#" id="linkShowLogin">Log In</a></p>
       <p id="regMsg" class="msg"></p>
-    </section>
+    </div>
 
-    <section id="appSection" class="hidden">
+    <div id="appSection" class="hidden">
       <p id="searchMsg" class="msg"></p>
 
       <div id="searchResultsCard" class="card hidden">
         <div class="row tight">
-          <h2 style="margin:0">search results</h2>
-          <button type="button" class="secondary" id="btnClearSearch">clear</button>
+          <h2 style="margin:0">Search Results</h2>
+          <button type="button" class="secondary" id="btnClearSearch">Clear</button>
         </div>
         <div id="searchResults" class="grid"></div>
       </div>
@@ -53,64 +51,81 @@
         <div id="detailBox" class="detail-box"></div>
       </div>
 
-      <nav class="tabs">
-        <button type="button" class="tab active" data-tab="discover">discover</button>
-        <button type="button" class="tab" data-tab="watchlist">watchlist</button>
-        <button type="button" class="tab" data-tab="reviews">reviews</button>
-        <button type="button" class="tab" data-tab="recs">recommended</button>
-      </nav>
+      <div class="tabs">
+        <button type="button" class="tab active" data-tab="discover">Discover</button>
+        <button type="button" class="tab" data-tab="watchlist">Watchlist</button>
+        <button type="button" class="tab" data-tab="reviews">Reviews</button>
+        <button type="button" class="tab" data-tab="recs">Recommended</button>
+        <button type="button" class="tab" data-tab="pro">Pro</button>
+      </div>
 
-      <section class="tab-panel active" data-tab="discover">
+      <div class="tab-panel active" data-tab="discover">
         <div class="card">
-          <h2>discover</h2>
-          <p class="hint">popular picks — click to see info, add to watchlist, or rate</p>
+          <h2>Discover</h2>
+          <p class="hint">Popular picks. Click a movie to view details, add to watchlist, or rate.</p>
           <div id="listDiscover" class="grid"></div>
         </div>
-      </section>
+      </div>
 
-      <section class="tab-panel" data-tab="watchlist">
+      <div class="tab-panel" data-tab="watchlist">
         <div class="card">
-          <h2>your watchlist</h2>
+          <h2>Your Watchlist</h2>
           <div class="row tight">
-            <label>sort
+            <label>Sort
               <select id="sortWant">
-                <option value="added">newest</option>
-                <option value="title">a-z title</option>
+                <option value="added">Newest</option>
+                <option value="title">Title A-Z</option>
               </select>
             </label>
-            <button type="button" id="btnRefreshWant">reload</button>
+            <button type="button" id="btnRefreshWant">Refresh</button>
           </div>
           <div id="listWant" class="list"></div>
         </div>
-      </section>
+      </div>
 
-      <section class="tab-panel" data-tab="reviews">
+      <div class="tab-panel" data-tab="reviews">
         <div class="card">
-          <h2>your reviews</h2>
+          <h2>Your Reviews</h2>
           <div class="row tight">
-            <label>sort
+            <label>Sort
               <select id="sortSeen">
-                <option value="rating_high">stars high</option>
-                <option value="rating_low">stars low</option>
-                <option value="title">a-z title</option>
-                <option value="added">newest edit</option>
+                <option value="rating_high">Stars High</option>
+                <option value="rating_low">Stars Low</option>
+                <option value="title">Title A-Z</option>
+                <option value="added">Recently Updated</option>
               </select>
             </label>
-            <button type="button" id="btnRefreshSeen">reload</button>
+            <button type="button" id="btnRefreshSeen">Refresh</button>
           </div>
           <div id="listSeen" class="list"></div>
         </div>
-      </section>
+      </div>
 
-      <section class="tab-panel" data-tab="recs">
+      <div class="tab-panel" data-tab="recs">
         <div class="card">
-          <h2>recommended for you</h2>
-          <p class="hint">picked from your top genres</p>
+          <h2>Recommended For You</h2>
+          <p class="hint">Suggestions based on your top genres.</p>
           <div id="listRecs" class="list"></div>
         </div>
-      </section>
-    </section>
-  </main>
+      </div>
+
+      <div class="tab-panel" data-tab="pro">
+        <div class="card">
+          <h2>Popcorn Pro</h2>
+          <p class="hint">Support the app and unlock Pro status.</p>
+          <p><strong>Current plan:</strong> <span id="planStatus">Loading...</span></p>
+          <p><strong>Renews:</strong> <span id="planRenew">-</span></p>
+          <div class="row tight">
+            <button type="button" id="btnPlanMonthly">$4.99 monthly</button>
+            <button type="button" id="btnPlanYearly">$39 yearly</button>
+            <button type="button" class="secondary" id="btnPlanCancel">Cancel</button>
+            <button type="button" class="secondary" id="btnPlanRefresh">Refresh</button>
+          </div>
+          <p id="planMsg" class="msg"></p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>

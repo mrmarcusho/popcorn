@@ -28,6 +28,7 @@ function ensureDb() {
     await db.collection("user_movies").createIndex({ userId: 1, imdbId: 1 }, { unique: true });
     await db.collection("sessions").createIndex({ token: 1 }, { unique: true });
     await db.collection("sessions").createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+    await db.collection("subscriptions").createIndex({ userId: 1 }, { unique: true });
     console.log("mongodb connected");
     return db;
   }).catch(function (err) {
@@ -452,6 +453,72 @@ async function handleRecommendations(req, res, ctx) {
   sendJson(res, 200, { ok: true, recommendations: picks, topGenres: topGenres });
 }
 
+async function handleMonetizationStatus(req, res, ctx) {
+  var userId = new ObjectId(ctx.session.userId);
+  var row = await db.collection("subscriptions").findOne({ userId: userId });
+  if (!row || row.status !== "active") {
+    return sendJson(res, 200, {
+      ok: true,
+      plan: "free",
+      planLabel: "free",
+      renewsAtLabel: "-"
+    });
+  }
+  var planLabel = row.plan === "yearly" ? "pro yearly ($39)" : "pro monthly ($4.99)";
+  var renewsAtLabel = row.renewsAt ? new Date(row.renewsAt).toLocaleDateString() : "-";
+  sendJson(res, 200, {
+    ok: true,
+    plan: row.plan,
+    planLabel: planLabel,
+    renewsAtLabel: renewsAtLabel
+  });
+}
+
+async function handleMonetizationSubscribe(req, res, ctx) {
+  var body = await readJsonBody(req);
+  var plan = (body.plan || "").trim();
+  var renewsAt;
+  var userId = new ObjectId(ctx.session.userId);
+  if (plan !== "monthly" && plan !== "yearly") {
+    return sendJson(res, 400, { ok: false, error: "plan should be monthly or yearly" });
+  }
+  if (plan === "monthly") {
+    renewsAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  } else {
+    renewsAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+  }
+  await db.collection("subscriptions").updateOne(
+    { userId: userId },
+    {
+      $set: {
+        userId: userId,
+        plan: plan,
+        status: "active",
+        renewsAt: renewsAt,
+        updatedAt: new Date()
+      },
+      $setOnInsert: { createdAt: new Date() }
+    },
+    { upsert: true }
+  );
+  sendJson(res, 200, { ok: true, message: "pro plan updated" });
+}
+
+async function handleMonetizationCancel(req, res, ctx) {
+  var userId = new ObjectId(ctx.session.userId);
+  await db.collection("subscriptions").updateOne(
+    { userId: userId },
+    {
+      $set: {
+        status: "canceled",
+        updatedAt: new Date()
+      }
+    },
+    { upsert: true }
+  );
+  sendJson(res, 200, { ok: true, message: "plan canceled" });
+}
+
 //---------- router ----------
 
 function requireLogin(handler) {
@@ -474,6 +541,9 @@ var ROUTES = [
   { method: "POST", path: "/api/my-movies", handler: requireLogin(handleSaveMyMovie) },
   { method: "DELETE", path: "/api/my-movies/:imdbId", handler: requireLogin(handleDeleteMyMovie) },
   { method: "GET",  path: "/api/recommendations", handler: requireLogin(handleRecommendations) },
+  { method: "GET",  path: "/api/monetization", handler: requireLogin(handleMonetizationStatus) },
+  { method: "POST", path: "/api/monetization/subscribe", handler: requireLogin(handleMonetizationSubscribe) },
+  { method: "POST", path: "/api/monetization/cancel", handler: requireLogin(handleMonetizationCancel) },
 ];
 
 //match a request path against a route pattern with :param tokens
