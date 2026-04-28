@@ -9,16 +9,17 @@
 <body>
   <header class="top">
     <div class="brand">
-      <div>
-        <h1>Popcorn</h1>
-        <p class="tagline">movie list thing for class</p>
-      </div>
+      <h1>🍿 Popcorn</h1>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="search movies..." />
+      <button type="button" id="btnSearch">search</button>
     </div>
     <div id="authArea" class="auth-area"></div>
   </header>
 
   <main>
-    <section id="loginSection" class="card">
+    <section id="loginSection" class="card auth-card">
       <h2>log in</h2>
       <p class="hint">so your stuff saves</p>
       <label>username <input type="text" id="loginUser" /></label>
@@ -28,7 +29,7 @@
       <p id="loginMsg" class="msg"></p>
     </section>
 
-    <section id="registerSection" class="card hidden">
+    <section id="registerSection" class="card auth-card hidden">
       <h2>register</h2>
       <label>username <input type="text" id="regUser" /></label>
       <label>password <input type="password" id="regPass" /></label>
@@ -38,52 +39,75 @@
     </section>
 
     <section id="appSection" class="hidden">
-      <p class="welcome">hi <strong id="welcomeName"></strong>, search a movie, add it to your watchlist, or mark it as seen with a rating and a short review.</p>
+      <p id="searchMsg" class="msg"></p>
 
-      <section class="card">
-        <h2>search</h2>
-        <div class="row">
-          <input type="text" id="searchInput" placeholder="movie name" />
-          <button type="button" id="btnSearch">go</button>
-        </div>
-        <p id="searchMsg" class="msg"></p>
-        <div id="searchResults" class="results"></div>
-      </section>
-
-      <section class="card">
-        <h2>movie info</h2>
-        <p class="hint">click a result above</p>
-        <div id="detailBox" class="detail-box empty">nothing picked</div>
-      </section>
-
-      <section class="card">
-        <h2>watch later</h2>
+      <div id="searchResultsCard" class="card hidden">
         <div class="row tight">
-          <label>sort
-            <select id="sortWant">
-              <option value="added">newest</option>
-              <option value="title">a-z title</option>
-            </select>
-          </label>
-          <button type="button" id="btnRefreshWant">reload</button>
+          <h2 style="margin:0">search results</h2>
+          <button type="button" class="secondary" id="btnClearSearch">clear</button>
         </div>
-        <div id="listWant" class="list"></div>
+        <div id="searchResults" class="grid"></div>
+      </div>
+
+      <div id="detailCard" class="card hidden">
+        <div id="detailBox" class="detail-box"></div>
+      </div>
+
+      <nav class="tabs">
+        <button type="button" class="tab active" data-tab="discover">discover</button>
+        <button type="button" class="tab" data-tab="watchlist">watchlist</button>
+        <button type="button" class="tab" data-tab="reviews">reviews</button>
+        <button type="button" class="tab" data-tab="recs">recommended</button>
+      </nav>
+
+      <section class="tab-panel active" data-tab="discover">
+        <div class="card">
+          <h2>discover</h2>
+          <p class="hint">popular picks — click to see info, add to watchlist, or rate</p>
+          <div id="listDiscover" class="grid"></div>
+        </div>
       </section>
 
-      <section class="card">
-        <h2>already watched</h2>
-        <div class="row tight">
-          <label>sort
-            <select id="sortSeen">
-              <option value="rating_high">stars high</option>
-              <option value="rating_low">stars low</option>
-              <option value="title">a-z title</option>
-              <option value="added">newest edit</option>
-            </select>
-          </label>
-          <button type="button" id="btnRefreshSeen">reload</button>
+      <section class="tab-panel" data-tab="watchlist">
+        <div class="card">
+          <h2>your watchlist</h2>
+          <div class="row tight">
+            <label>sort
+              <select id="sortWant">
+                <option value="added">newest</option>
+                <option value="title">a-z title</option>
+              </select>
+            </label>
+            <button type="button" id="btnRefreshWant">reload</button>
+          </div>
+          <div id="listWant" class="list"></div>
         </div>
-        <div id="listSeen" class="list"></div>
+      </section>
+
+      <section class="tab-panel" data-tab="reviews">
+        <div class="card">
+          <h2>your reviews</h2>
+          <div class="row tight">
+            <label>sort
+              <select id="sortSeen">
+                <option value="rating_high">stars high</option>
+                <option value="rating_low">stars low</option>
+                <option value="title">a-z title</option>
+                <option value="added">newest edit</option>
+              </select>
+            </label>
+            <button type="button" id="btnRefreshSeen">reload</button>
+          </div>
+          <div id="listSeen" class="list"></div>
+        </div>
+      </section>
+
+      <section class="tab-panel" data-tab="recs">
+        <div class="card">
+          <h2>recommended for you</h2>
+          <p class="hint">picked from your top genres</p>
+          <div id="listRecs" class="list"></div>
+        </div>
       </section>
     </section>
   </main>
