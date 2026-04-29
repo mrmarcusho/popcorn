@@ -164,7 +164,6 @@ function switchTab(name) {
     else panels[i].classList.remove("active");
   }
   if (name === "recs") loadRecs();
-  if (name === "pro") loadMonetization();
 }
 
 function posterTile(m, extraLine) {
@@ -440,7 +439,13 @@ function loadRecs() {
     }
     recs = data.recommendations || [];
     if (!recs.length) {
-      box.innerHTML = "<p class='small'>" + escapeHtml(data.message || "Rate a few movies first to get recommendations.") + "</p>";
+      var msg = data.message || "Rate a few movies first to get recommendations.";
+      if (msg === "no genre data yet") {
+        msg = "We need genre data first. Open a movie and save it as Watched + Rate.";
+      } else if (msg === "rate a few movies first") {
+        msg = "No recommendations yet. Add and rate a few watched movies first.";
+      }
+      box.innerHTML = "<p class='small'>" + escapeHtml(msg) + "</p>";
       return;
     }
     topLine = "";
@@ -454,51 +459,6 @@ function loadRecs() {
     html += "</div>";
     box.innerHTML = html;
     wireTiles(box);
-  });
-}
-
-function loadMonetization() {
-  var statusEl = $("planStatus");
-  var renewEl = $("planRenew");
-  if (!statusEl || !renewEl) return;
-  statusEl.textContent = "loading...";
-  renewEl.textContent = "-";
-  showMsg($("planMsg"), "", false);
-  api("/api/monetization", {}, function (data) {
-    if (!data.ok) {
-      statusEl.textContent = "error";
-      showMsg($("planMsg"), data.error || "error", true);
-      return;
-    }
-    statusEl.textContent = data.planLabel || "free";
-    renewEl.textContent = data.renewsAtLabel || "-";
-  });
-}
-
-function buyPlan(plan) {
-  showMsg($("planMsg"), "processing...", false);
-  api("/api/monetization/subscribe", {
-    method: "POST",
-    body: { plan: plan }
-  }, function (data) {
-    if (!data.ok) {
-      showMsg($("planMsg"), data.error || "error", true);
-      return;
-    }
-    showMsg($("planMsg"), data.message || "plan updated", false);
-    loadMonetization();
-  });
-}
-
-function cancelPlan() {
-  showMsg($("planMsg"), "updating...", false);
-  api("/api/monetization/cancel", { method: "POST" }, function (data) {
-    if (!data.ok) {
-      showMsg($("planMsg"), data.error || "error", true);
-      return;
-    }
-    showMsg($("planMsg"), data.message || "canceled", false);
-    loadMonetization();
   });
 }
 
@@ -528,10 +488,6 @@ window.onload = function () {
   $("sortSeen").onchange = loadLists;
   $("btnRefreshWant").onclick = loadLists;
   $("btnRefreshSeen").onclick = loadLists;
-  $("btnPlanMonthly").onclick = function () { buyPlan("monthly"); };
-  $("btnPlanYearly").onclick = function () { buyPlan("yearly"); };
-  $("btnPlanCancel").onclick = cancelPlan;
-  $("btnPlanRefresh").onclick = loadMonetization;
 
   tabBtns = document.querySelectorAll(".tab");
   for (i = 0; i < tabBtns.length; i++) {

@@ -1,13 +1,14 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Popcorn</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="top">
     <div class="brand">
-      <h1>🍿 Popcorn</h1>
+      <h1><a href="/home.html" class="brand-link">🍿 Popcorn</a></h1>
     </div>
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="search movies...">
@@ -56,7 +57,6 @@
         <button type="button" class="tab" data-tab="watchlist">Watchlist</button>
         <button type="button" class="tab" data-tab="reviews">Reviews</button>
         <button type="button" class="tab" data-tab="recs">Recommended</button>
-        <button type="button" class="tab" data-tab="pro">Pro</button>
       </div>
 
       <div class="tab-panel active" data-tab="discover">
@@ -104,26 +104,11 @@
       <div class="tab-panel" data-tab="recs">
         <div class="card">
           <h2>Recommended For You</h2>
-          <p class="hint">Suggestions based on your top genres.</p>
+          <p class="hint">Recommendations from genres in your rated movies.</p>
           <div id="listRecs" class="list"></div>
         </div>
       </div>
 
-      <div class="tab-panel" data-tab="pro">
-        <div class="card">
-          <h2>Popcorn Pro</h2>
-          <p class="hint">Support the app and unlock Pro status.</p>
-          <p><strong>Current plan:</strong> <span id="planStatus">Loading...</span></p>
-          <p><strong>Renews:</strong> <span id="planRenew">-</span></p>
-          <div class="row tight">
-            <button type="button" id="btnPlanMonthly">$4.99 monthly</button>
-            <button type="button" id="btnPlanYearly">$39 yearly</button>
-            <button type="button" class="secondary" id="btnPlanCancel">Cancel</button>
-            <button type="button" class="secondary" id="btnPlanRefresh">Refresh</button>
-          </div>
-          <p id="planMsg" class="msg"></p>
-        </div>
-      </div>
     </div>
   </div>
 
